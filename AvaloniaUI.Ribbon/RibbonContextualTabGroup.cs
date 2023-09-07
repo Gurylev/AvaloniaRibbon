@@ -13,7 +13,7 @@ using System.Collections.Specialized;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class RibbonContextualTabGroup : HeaderedItemsControl, IStyleable
+    public class RibbonContextualTabGroup : HeaderedItemsControl
     {
         static RibbonContextualTabGroup()
         {
@@ -22,6 +22,26 @@ namespace AvaloniaUI.Ribbon
                 if ((e.NewValue is bool visible) && (!visible))
                     sender.SwitchToNextVisibleTab();
             });
+
+            ItemsSourceProperty.Changed.AddClassHandler<RibbonContextualTabGroup>((sender, args) =>
+            {
+                if (args.OldValue is INotifyCollectionChanged oldSource)
+                    oldSource.CollectionChanged -= sender.ItemsCollectionChanged;
+                if (args.NewValue is INotifyCollectionChanged newSource)
+                {
+                    newSource.CollectionChanged += sender.ItemsCollectionChanged;
+                }
+            });
+        }
+
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+        }
+        
+        public RibbonContextualTabGroup()
+        {
+            Items.CollectionChanged += ItemsCollectionChanged;           
         }
 
         void SwitchToNextVisibleTab()
@@ -64,9 +84,8 @@ namespace AvaloniaUI.Ribbon
                     */
         }
 
-        protected override void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        protected void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            base.ItemsCollectionChanged(sender, e);
             if (e.OldItems != null)
             {
                 foreach (RibbonTab tab in e.OldItems.OfType<RibbonTab>())
@@ -80,6 +99,6 @@ namespace AvaloniaUI.Ribbon
             }
         }
 
-        Type IStyleable.StyleKey => typeof(RibbonContextualTabGroup);
+        protected override Type StyleKeyOverride => typeof(RibbonContextualTabGroup);
     }
 }

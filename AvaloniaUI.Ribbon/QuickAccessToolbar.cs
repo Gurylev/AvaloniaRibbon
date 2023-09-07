@@ -30,7 +30,7 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class QuickAccessToolbar : ItemsControl, IStyleable//, IKeyTipHandler
+    public class QuickAccessToolbar : ItemsControl//, IKeyTipHandler
     {
         public static readonly StyledProperty<Ribbon> RibbonProperty = AvaloniaProperty.Register<QuickAccessToolbar, Ribbon>(nameof(Ribbon));
         public Ribbon Ribbon
@@ -75,7 +75,7 @@ namespace AvaloniaUI.Ribbon
         
         MenuItem _collapseRibbonItem = new MenuItem()
         {
-            Classes = new Classes(FIXED_ITEM_CLASS)
+            //Classes = new Classes(FIXED_ITEM_CLASS)
         };
         public QuickAccessToolbar() : base()
         {
@@ -89,7 +89,7 @@ namespace AvaloniaUI.Ribbon
             };
         }
 
-        Type IStyleable.StyleKey => typeof(QuickAccessToolbar);
+        protected override Type StyleKeyOverride => typeof(QuickAccessToolbar);
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
             base.OnApplyTemplate(e);
@@ -100,14 +100,14 @@ namespace AvaloniaUI.Ribbon
             {
                 //Header =  new DynamicResourceExtension()., //"More commands...",
                 IsEnabled = false, //[!IsEnabledProperty] = this.GetObservable(RibbonProperty).Select(x => x != null).ToBinding(),
-                Classes = new Classes(FIXED_ITEM_CLASS)
+                //Classes = new Classes(FIXED_ITEM_CLASS)
             };
             moreCmdItem[!MenuItem.HeaderProperty] = moreCmdItem.GetResourceObservable("AvaloniaRibbon.MoreQATCommands").ToBinding();
 
             
 
 
-            morCtx.MenuOpened += (sneder, a) => 
+            morCtx.Opened += (sneder, a) => 
             {
                 if (more.IsChecked != true)
                     more.IsChecked = true;
@@ -122,17 +122,19 @@ namespace AvaloniaUI.Ribbon
                 morCtxItems.Add(new Separator());
                 morCtxItems.Add(moreCmdItem);
                 morCtxItems.Add(_collapseRibbonItem);
-                morCtx.Items = morCtxItems;
+                morCtx.ItemsSource = morCtxItems;
             };
 
-            morCtx.MenuClosed += (sneder, a) =>
+            morCtx.Closed += (sneder, a) =>
             {
                 if (more.IsChecked == true)
                     more.IsChecked = false;
             };
 
-            more.Checked += (sneder, a) => morCtx.Open(more);
-            more.Unchecked += (sneder, a) => morCtx.Close();
+
+            //TODO StackOverFlow
+            more.IsCheckedChanged += (sneder, a) => morCtx.Open(more);
+            more.IsCheckedChanged -= (sneder, a) => morCtx.Close();
         }
 
         /*protected override void ItemsChanged(AvaloniaPropertyChangedEventArgs e)
@@ -154,11 +156,11 @@ namespace AvaloniaUI.Ribbon
             foreach (Control itm in ((AvaloniaList<object>)Items).OfType<Control>())
                 panel.Children.Add(itm);
         }*/
-
-        protected override IItemContainerGenerator CreateItemContainerGenerator()
-        {
-            return new ItemContainerGenerator<QuickAccessItem>(this, QuickAccessItem.ItemProperty, QuickAccessItem.ContentTemplateProperty);
-        }
+       
+        //protected override Control CreateContainerForItemOverride(object item, int index, object recycleKey)
+        //{
+        //    return ItemContainerGenerator.CreateContainer(item, index, recycleKey);
+        //}
 
         public bool ContainsItem(ICanAddToQuickAccess item) => ContainsItem(item, out object result);
         public bool ContainsItem(ICanAddToQuickAccess item, out object result)
@@ -193,7 +195,7 @@ namespace AvaloniaUI.Ribbon
                 
                 if (itm.CanAddToQuickAccess)
                 {
-                    Items = Items.OfType<object>().Append(item);
+                    ItemsSource = Items.OfType<object>().Append(item);
                     return true;
                 }
             }
@@ -218,7 +220,7 @@ namespace AvaloniaUI.Ribbon
                     
                     return false;
                 }));
-                Items = items;
+                ItemsSource = items;
                 return true;
             }
         }
@@ -236,7 +238,7 @@ namespace AvaloniaUI.Ribbon
     }
 
     
-    public class QuickAccessItem : ContentControl, IStyleable
+    public class QuickAccessItem : ContentControl
     {
         public static readonly StyledProperty<ICanAddToQuickAccess> ItemProperty = AvaloniaProperty.Register<QuickAccessItem, ICanAddToQuickAccess>(nameof(Item), null);
         public ICanAddToQuickAccess Item
@@ -245,7 +247,7 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(ItemProperty, value);
         }
 
-        Type IStyleable.StyleKey => typeof(QuickAccessItem);
+        protected override Type StyleKeyOverride => typeof(QuickAccessItem);
 
         protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
@@ -262,13 +264,13 @@ namespace AvaloniaUI.Ribbon
             get => GetValue(ItemProperty);
             set => SetValue(ItemProperty, value);
         }
-        public static readonly DirectProperty<QuickAccessRecommendation, bool?> IsCheckedProperty = ToggleButton.IsCheckedProperty.AddOwner<QuickAccessRecommendation>(o => o.IsChecked, (o, v) => o.IsChecked = v);
-        private bool? _isChecked = false;
+        public static readonly StyledProperty<bool?> IsCheckedProperty = ToggleButton.IsCheckedProperty.AddOwner<QuickAccessRecommendation>();
         public bool? IsChecked
         {
-            get => _isChecked;
-            set => SetAndRaise(IsCheckedProperty, ref _isChecked, value);
+            get => GetValue(IsCheckedProperty);
+            set => SetValue(IsCheckedProperty, value);
         }
+
 
         /*void NotifyPropertyChanged([CallerMemberName]string propertyName = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         public event PropertyChangedEventHandler PropertyChanged;*/

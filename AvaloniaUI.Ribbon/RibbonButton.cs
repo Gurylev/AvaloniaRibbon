@@ -7,7 +7,7 @@ using System;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class RibbonButton : Button, IStyleable, IRibbonControl, ICanAddToQuickAccess
+    public class RibbonButton : Button, IRibbonControl, ICanAddToQuickAccess
     {
 
         public static readonly AvaloniaProperty<RibbonControlSize> SizeProperty;
@@ -30,7 +30,7 @@ namespace AvaloniaUI.Ribbon
             Button.FocusableProperty.OverrideDefaultValue<RibbonButton>(false);
         }
 
-        Type IStyleable.StyleKey => typeof(RibbonButton);
+        protected override Type StyleKeyOverride => typeof(RibbonButton);
 
         public IControlTemplate Icon
         {

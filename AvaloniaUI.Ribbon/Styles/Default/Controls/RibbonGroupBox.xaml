@@ -63,9 +63,9 @@
                   </Grid>
                 </Border>
               </Button>
-              <ContentPresenter x:Name="PART_HeaderPresenter" TextBlock.FontSize="11" Content="{TemplateBinding Header}" TextBlock.Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center"/>
+              <ContentPresenter x:Name="PART_HeaderPresenter" Content="{TemplateBinding Header}" TextBlock.Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center"/>
             </DockPanel>
-            <ItemsPresenter x:Name="PART_ItemsPresenter" Items="{TemplateBinding Items}" ItemTemplate="{TemplateBinding ItemTemplate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{TemplateBinding Padding}">
+            <ItemsPresenter x:Name="PART_ItemsPresenter" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{TemplateBinding Padding}">
               <ItemsPresenter.ItemsPanel>
                 <ItemsPanelTemplate>
                   <local:RibbonGroupWrapPanel x:Name="PART_ItemsPanel" DisplayMode="{TemplateBinding DisplayMode}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>

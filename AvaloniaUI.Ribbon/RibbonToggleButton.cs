@@ -9,7 +9,7 @@ using System.Text;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class RibbonToggleButton : ToggleButton, IStyleable, IRibbonControl, ICanAddToQuickAccess
+    public class RibbonToggleButton : ToggleButton, IRibbonControl, ICanAddToQuickAccess
     {
         public static readonly AvaloniaProperty<RibbonControlSize> SizeProperty;
         public static readonly AvaloniaProperty<RibbonControlSize> MinSizeProperty;
@@ -32,7 +32,7 @@ namespace AvaloniaUI.Ribbon
             ToggleButton.FocusableProperty.OverrideDefaultValue<RibbonToggleButton>(false);
         }
 
-        Type IStyleable.StyleKey => typeof(RibbonToggleButton);
+        protected override Type StyleKeyOverride => typeof(RibbonToggleButton);
 
         public IControlTemplate Icon
         {

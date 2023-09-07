@@ -29,7 +29,12 @@
                 Content="{TemplateBinding Header}"
                 TextBlock.Foreground="{TemplateBinding Foreground}"
                 ContentTemplate="{TemplateBinding HeaderTemplate}"/>
-            <Rectangle Classes="textEmphasis" Width="{Binding #PART_ContentPresenter.Bounds.Width}" Height="{Binding #PART_ContentPresenter.Bounds.Height}">
+            <Rectangle Classes="textEmphasis">
+              <Rectangle.Fill>
+                <VisualBrush Stretch="Fill" Visual="{Binding #PART_ContentPresenter}"/>
+              </Rectangle.Fill>
+            </Rectangle>
+            <!--<Rectangle Classes="textEmphasis" Width="{Binding #PART_ContentPresenter.Bounds.Width}" Height="{Binding #PART_ContentPresenter.Bounds.Height}">
               <Rectangle.Fill>
                 <VisualBrush Stretch="Fill" Visual="{Binding #PART_ContentPresenter}"/>
               </Rectangle.Fill>
@@ -38,12 +43,7 @@
               <Rectangle.Fill>
                 <VisualBrush Stretch="Fill" Visual="{Binding #PART_ContentPresenter}"/>
               </Rectangle.Fill>
-            </Rectangle>
-            <Rectangle Classes="textEmphasis" Width="{Binding #PART_ContentPresenter.Bounds.Width}" Height="{Binding #PART_ContentPresenter.Bounds.Height}">
-              <Rectangle.Fill>
-                <VisualBrush Stretch="Fill" Visual="{Binding #PART_ContentPresenter}"/>
-              </Rectangle.Fill>
-            </Rectangle>
+            </Rectangle>-->
             <Border x:Name="SelectedBorder" BorderThickness="0" MinWidth="3" MinHeight="3" IsVisible="{TemplateBinding IsSelected}" CornerRadius="1.5" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="-2,3"/>
             <!--Panel IsVisible="{TemplateBinding IsContextual}" Opacity="0.25">
               <Border x:Name="ContextualSelectedBorder" BorderThickness="{Binding #SelectedBorder.BorderThickness}" HorizontalAlignment="{Binding #SelectedBorder.HorizontalAlignment}" VerticalAlignment="{Binding #SelectedBorder.VerticalAlignment}" IsVisible="{Binding #SelectedBorder.IsVisible}" Opacity="{Binding #SelectedBorder.Opacity}"/>

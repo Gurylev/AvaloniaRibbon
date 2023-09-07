@@ -8,17 +8,23 @@
         <StackPanel Orientation="Horizontal" Spacing="10">
           <local:RibbonButton Content="Large Ribbon Button">
             <local:RibbonButton.LargeIcon>
-              <Image Source="/Assets/settings.png" Width="32" Height="32"/>
+              <ControlTemplate>
+                <Image Source="/Assets/settings.png" Width="32" Height="32"/>
+              </ControlTemplate>
             </local:RibbonButton.LargeIcon>
           </local:RibbonButton>
           <local:RibbonButton Size="Medium" Content="Medium Ribbon Button">
             <local:RibbonButton.Icon>
-              <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              <ControlTemplate>
+                <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              </ControlTemplate>
             </local:RibbonButton.Icon>
           </local:RibbonButton>
           <local:RibbonButton Size="Small" Content="Small Ribbon Button">
             <local:RibbonButton.Icon>
-              <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              <ControlTemplate>
+                <Image Source="/Assets/settings.png" Width="16" Height="16"/>
+              </ControlTemplate>
             </local:RibbonButton.Icon>
           </local:RibbonButton>
         </StackPanel>
@@ -59,7 +65,7 @@
   <Style Selector="local|RibbonButton[Size=Large]">
     <Setter Property="Padding" Value="9,4" />
     <Setter Property="MaxWidth" Value="66"/>
-    <Setter Property="Height" Value="72"/>
+    <Setter Property="MaxHeight" Value="72"/>
     <Setter Property="Template">
       <ControlTemplate>
         <Border Classes="RibbonButtonBackgroundBorder">
@@ -72,7 +78,7 @@
     </Setter>
   </Style>
   <Style Selector="local|RibbonButton[Size=Large] /template/ ContentPresenter TextBlock">
-    <Setter Property="TextWrapping" Value="Wrap"/>
+    <Setter Property="TextWrapping" Value="NoWrap"/>
     <Setter Property="TextAlignment" Value="Center"/>
     <Setter Property="Margin" Value="0,-3"/>
     <Setter Property="VerticalAlignment" Value="Center"/>

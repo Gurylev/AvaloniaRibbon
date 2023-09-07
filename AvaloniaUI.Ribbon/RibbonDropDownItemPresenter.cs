@@ -14,7 +14,7 @@ using Avalonia.Controls.Templates;
 namespace AvaloniaUI.Ribbon
 {
 
-    public class RibbonDropDownItemPresenter : Button, IStyleable
+    public class RibbonDropDownItemPresenter : Button
     {
         /*public static readonly StyledProperty<IControlTemplate> IconProperty = RibbonControlItem.IconProperty.AddOwner<RibbonControlItemPresenter>();
         public IControlTemplate Icon
@@ -23,6 +23,6 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(IconProperty, value);
         }*/
 
-        Type IStyleable.StyleKey => typeof(RibbonDropDownItemPresenter);
+        protected override Type StyleKeyOverride => typeof(RibbonDropDownItemPresenter);
     }
 }

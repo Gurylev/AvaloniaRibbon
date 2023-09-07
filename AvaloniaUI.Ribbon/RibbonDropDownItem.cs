@@ -46,12 +46,11 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(IsCheckedProperty, value);
         }
 
-        public static readonly DirectProperty<RibbonDropDownItem, ICommand> CommandProperty = Button.CommandProperty.AddOwner<RibbonDropDownItem>(i => i.Command, (i, c) => i.Command = c);
-        private ICommand _command;
+        public static readonly StyledProperty<ICommand> CommandProperty = Button.CommandProperty.AddOwner<RibbonDropDownItem>();
         public ICommand Command
         {
-            get => _command;
-            set => SetAndRaise(CommandProperty, ref _command, value);
+            get => GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
 

@@ -19,12 +19,32 @@ using System.Collections.ObjectModel;
 using Avalonia.Controls.Generators;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
+using System.Drawing;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class Ribbon : TabControl, IStyleable, IMainMenu, IKeyTipHandler
+    public class Ribbon : TabControl, IKeyTipHandler
     {
-        public static readonly StyledProperty<Orientation> OrientationProperty = StackLayout.OrientationProperty.AddOwner<Ribbon>();
+        public static readonly StyledProperty<WindowIcon> IconProperty =
+            Window.IconProperty.AddOwner<Ribbon>();
+
+        public WindowIcon Icon
+        {
+            get => GetValue(IconProperty);
+            set => SetValue(IconProperty, value);
+        }
+
+        public static readonly StyledProperty<string> TitleProperty =
+            AvaloniaProperty.Register<Ribbon, string>(nameof(Title), string.Empty);
+
+        public string Title
+        {
+            get => GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
+        }
+
+
+        public static readonly StyledProperty<Orientation> OrientationProperty = StackPanel.OrientationProperty.AddOwner<Ribbon>();
         public Orientation Orientation
         {
             get => GetValue(OrientationProperty);
@@ -58,14 +78,16 @@ namespace AvaloniaUI.Ribbon
 
             SelectedIndexProperty.Changed.AddClassHandler<Ribbon>((x, e) => x.RefreshSelectedGroups());
 
-            IsCollapsedProperty.Changed.AddClassHandler(new Action<Ribbon, AvaloniaPropertyChangedEventArgs>((sneder, args) => sneder.UpdatePresenterLocation((bool)args.NewValue)));
+            IsCollapsedProperty.Changed.AddClassHandler<Ribbon, bool>(((sender, args) => sender.UpdatePresenterLocation(args.NewValue.Value)));
+
             //IsCollapsedPopupOpenProperty.Changed.AddClassHandler(new Action<Ribbon, AvaloniaPropertyChangedEventArgs>((sneder, args) => sneder.UpdatePresenterLocation(sneder.IsCollapsed)));
 
-            AccessKeyHandler.AccessKeyPressedEvent.AddClassHandler<Ribbon>((sender, e) =>
-            {
-                if (e.Source is Control ctrl)
-                    (sender as Ribbon).HandleKeyTipControl(ctrl);
-            });
+            //TODO
+            //AccessKeyHandler.AccessKeyPressedEvent.AddClassHandler<Ribbon>((sender, e) =>
+            //{
+            //    if (e.Source is Control ctrl)
+            //        (sender as Ribbon).HandleKeyTipControl(ctrl);
+            //});
 
             KeyTip.ShowChildKeyTipKeysProperty.Changed.AddClassHandler<Ribbon>(new Action<Ribbon, AvaloniaPropertyChangedEventArgs>((sender, args) =>
             {
@@ -95,9 +117,11 @@ namespace AvaloniaUI.Ribbon
                 foreach (RibbonGroupBox box in tab.Groups)
                     SelectedGroups.Add(box);
                 
-                var last = SelectedGroups.Last();
-                SelectedGroups.Remove(last);
-                SelectedGroups.Add(last);
+                if (SelectedGroups.LastOrDefault() is RibbonGroupBox last)
+                {
+                    SelectedGroups.Remove(last);
+                    SelectedGroups.Add(last);
+                }
                 
                 if (tab.IsContextual)
                 {
@@ -109,16 +133,38 @@ namespace AvaloniaUI.Ribbon
 
         void RefreshTabs()
         {
-            ((AvaloniaList<object>)Items).Clear();
-            foreach (Control ctrl in Tabs)
+            if (Tabs is { })
             {
-                if (ctrl is RibbonContextualTabGroup ctx)
+                if (ItemsSource is IList list)
                 {
-                    foreach (RibbonTab tb in ctx.Items)
-                        ((AvaloniaList<object>)Items).Add(tb);
+                    list.Clear();
+                    foreach (Control ctrl in Tabs)
+                    {
+                        if (ctrl is RibbonContextualTabGroup ctx)
+                        {
+                            foreach (RibbonTab tb in ctx.Items)
+                                list.Add(tb);
+                        }
+                        else if (ctrl is RibbonTab tab)
+                            list.Add(tab);
+                    }
                 }
-                else if (ctrl is RibbonTab tab)
-                    ((AvaloniaList<object>)Items).Add(tab);
+                else
+                {
+                    var newTabsList = new List<Control>();
+                    foreach (Control ctrl in Tabs)
+                    {
+                        if (ctrl is RibbonContextualTabGroup ctx)
+                        {
+                            foreach (RibbonTab tb in ctx.Items)
+                                newTabsList.Add(tb);
+                        }
+                        else if (ctrl is RibbonTab tab)
+                            newTabsList.Add(tab);
+                    }
+
+                    ItemsSource = newTabsList;
+                }
             }
         }
 
@@ -171,7 +217,7 @@ namespace AvaloniaUI.Ribbon
         }
 
 
-        Type IStyleable.StyleKey => typeof(Ribbon);
+        protected override Type StyleKeyOverride => typeof(Ribbon);
 
         public bool IsCollapsed
         {
@@ -300,7 +346,7 @@ namespace AvaloniaUI.Ribbon
 
                 bool contextualVisible = true;
                 if (newTab.IsContextual)
-                    contextualVisible = (newTab.Parent as RibbonContextualTabGroup).IsVisible;
+                    contextualVisible = (newTab.Parent as RibbonContextualTabGroup)?.IsVisible ?? false;
                 if (newTab.IsEffectivelyVisible && newTab.IsEnabled && contextualVisible)
                 {
                     switchTabs = true;
@@ -314,7 +360,7 @@ namespace AvaloniaUI.Ribbon
 
         public void GoToPreviousTab()
         {
-            var tabs = ((AvaloniaList<object>)Items).OfType<RibbonTab>().Where(x => x.IsEffectivelyVisible && x.IsEnabled);   
+            var tabs = ((AvaloniaList<object>)ItemsSource).OfType<RibbonTab>().Where(x => x.IsEffectivelyVisible && x.IsEnabled);   
         }
 
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -323,13 +369,13 @@ namespace AvaloniaUI.Ribbon
 
             var inputRoot = e.Root as IInputRoot;
 
-            if (inputRoot?.AccessKeyHandler != null)
-                inputRoot.AccessKeyHandler.MainMenu = this;
+            //if (inputRoot?.AccessKeyHandler != null)
+            //    inputRoot.AccessKeyHandler.MainMenu = this;
 
-            if ((inputRoot != null) && (inputRoot is WindowBase wnd))
-                wnd.Deactivated += InputRoot_Deactivated;
+            //if ((inputRoot != null) && (inputRoot is WindowBase wnd))
+            //    wnd.Deactivated += InputRoot_Deactivated;
             
-            inputRoot.AddHandler<PointerPressedEventArgs>(PointerPressedEvent, InputRoot_PointerPressed, handledEventsToo: true);
+            //inputRoot.AddHandler<PointerPressedEventArgs>(PointerPressedEvent, InputRoot_PointerPressed, handledEventsToo: true);
             
             RefreshTabs();
             RefreshSelectedGroups();
@@ -349,7 +395,7 @@ namespace AvaloniaUI.Ribbon
             if ((inputRoot != null) && (inputRoot is WindowBase wnd))
                 wnd.Deactivated -= InputRoot_Deactivated;
             
-            inputRoot.RemoveHandler<PointerPressedEventArgs>(PointerPressedEvent, InputRoot_PointerPressed);
+            //inputRoot.RemoveHandler<PointerPressedEventArgs>(PointerPressedEvent, InputRoot_PointerPressed);
         }
 
         private void InputRoot_Deactivated(object sender, EventArgs e)
@@ -364,7 +410,7 @@ namespace AvaloniaUI.Ribbon
 
             KeyTip.SetShowChildKeyTipKeys(this, false);
             IsOpen = false;
-            FocusManager.Instance.Focus(_prevFocusedElement);
+            _prevFocusedElement.Focus();
 
             RaiseEvent(new RoutedEventArgs
             {
@@ -380,7 +426,8 @@ namespace AvaloniaUI.Ribbon
                 return;
 
             IsOpen = true;
-            _prevFocusedElement = FocusManager.Instance.Current;
+            if (VisualRoot is TopLevel topLevel)
+                _prevFocusedElement = topLevel.FocusManager?.GetFocusedElement();
             Focus();
             KeyTip.SetShowChildKeyTipKeys(this, true);
 
@@ -545,7 +592,7 @@ namespace AvaloniaUI.Ribbon
                 IsCollapsed = !IsCollapsed;
             };
             
-            _groupsHost.PointerLeave += (sneder, args) => 
+            _groupsHost.PointerExited += (sneder, args) => 
             {
                 if (!_ctxMenu.IsOpen)
                     _rightClicked = null;
@@ -556,7 +603,7 @@ namespace AvaloniaUI.Ribbon
             {
                 if (args.Source != null)
                 {
-                    var ctrl = Avalonia.VisualTree.VisualExtensions.FindAncestorOfType<ICanAddToQuickAccess>(args.Source as IVisual);
+                    var ctrl = Avalonia.VisualTree.VisualExtensions.FindAncestorOfType<ICanAddToQuickAccess>(args.Source as Visual);
                     
                     _rightClicked = ctrl;
 
@@ -570,7 +617,7 @@ namespace AvaloniaUI.Ribbon
 
         private void UpdatePresenterLocation(bool intoFlyout)
         {
-            if (_groupsHost.Parent is IContentPresenter presenter)
+            if (_groupsHost.Parent is ContentPresenter presenter)
                 presenter.Content = null;
             else if (_groupsHost.Parent is ContentControl control)
                 control.Content = null;
@@ -582,10 +629,10 @@ namespace AvaloniaUI.Ribbon
             else
                 _mainPresenter.Content = _groupsHost;
         }
-        
-        protected override IItemContainerGenerator CreateItemContainerGenerator()
+
+        protected override Control CreateContainerForItemOverride(object item, int index, object recycleKey)
         {
-            return new ItemContainerGenerator(this);
+            return ItemContainerGenerator.CreateContainer(item, index, recycleKey);
         }
     }
 }

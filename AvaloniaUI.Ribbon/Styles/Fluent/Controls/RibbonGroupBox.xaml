@@ -10,17 +10,23 @@
             <local:RibbonGroupBox Header="Text or something" Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid}}}">
               <local:RibbonButton MinSize="Medium" MaxSize="Medium" Content="Button">
                 <local:RibbonButton.Icon>
-                  <Rectangle Width="16" Height="16" Fill="Red"/>
+                  <ControlTemplate>
+                    <Rectangle Width="16" Height="16" Fill="Red"/>
+                  </ControlTemplate>
                 </local:RibbonButton.Icon>
               </local:RibbonButton>
               <local:RibbonButton MinSize="Medium" MaxSize="Medium" Content="Button">
                 <local:RibbonButton.Icon>
-                  <Rectangle Width="16" Height="16" Fill="Red"/>
+                  <ControlTemplate>
+                    <Rectangle Width="16" Height="16" Fill="Red"/>
+                  </ControlTemplate>
                 </local:RibbonButton.Icon>
               </local:RibbonButton>
               <local:RibbonButton MinSize="Medium" MaxSize="Medium" Content="Button">
                 <local:RibbonButton.Icon>
-                  <Rectangle Width="16" Height="16" Fill="Red"/>
+                  <ControlTemplate>
+                    <Rectangle Width="16" Height="16" Fill="Red"/>
+                  </ControlTemplate>
                 </local:RibbonButton.Icon>
               </local:RibbonButton>
             </local:RibbonGroupBox>
@@ -35,14 +41,14 @@
     <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundChromeHighBrush}" />
     <Setter Property="Foreground" Value="{DynamicResource ThemeForegroundBrush}" />
     <Setter Property="BorderThickness" Value="{DynamicResource ThemeBorderThickness}"/>
-    <Setter Property="Padding" Value="5"/>
+    <Setter Property="Padding" Value="3"/>
     <Setter Property="VerticalAlignment" Value="Stretch"/>
     <!--Setter Property="Height" Value="{Binding Path=Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Panel}, Mode=OneWay}"/-->
     <Setter Property="Template">
       <ControlTemplate>
         <Panel Background="{TemplateBinding Background}">
           <Rectangle x:Name="Separator" MinWidth="1" MinHeight="1" Fill="{TemplateBinding BorderBrush}"/>
-          <DockPanel>
+          <DockPanel >
             <DockPanel DockPanel.Dock="Bottom" Margin="6,0,6,1">
               <Button Grid.Column="1" Grid.Row="1"
                   x:Name="PART_CommandButton"
@@ -57,18 +63,18 @@
                   </Binding>
                 </Button.IsVisible>
                 <Border Width="7" Height="7" BorderBrush="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" BorderThickness="1,1,0,0">
-                  <Grid Width="5" Height="5" Margin="0,0,-1,-1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                  <Grid Width="5" Height="5" Margin="0,0,-1,-1" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <Border BorderBrush="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" BorderThickness="0,0,1,1"/>
                     <Line StartPoint="1,1" EndPoint="5,5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1" Margin="-1,-1,1,1"/>
                   </Grid>
                 </Border>
               </Button>
-              <ContentPresenter x:Name="PART_HeaderPresenter" TextBlock.FontSize="11" Content="{TemplateBinding Header}" TextBlock.Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center"/>
+              <ContentPresenter x:Name="PART_HeaderPresenter" Content="{TemplateBinding Header}" TextBlock.Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="Center"/>
             </DockPanel>
-            <ItemsPresenter x:Name="PART_ItemsPresenter" Items="{TemplateBinding Items}" ItemTemplate="{TemplateBinding ItemTemplate}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{TemplateBinding Padding}">
+            <ItemsPresenter x:Name="PART_ItemsPresenter" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="{TemplateBinding Padding}">
               <ItemsPresenter.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <local:RibbonGroupWrapPanel x:Name="PART_ItemsPanel" DisplayMode="{TemplateBinding DisplayMode}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                  <local:RibbonGroupWrapPanel x:Name="PART_ItemsPanel" DisplayMode="{TemplateBinding DisplayMode}" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
               </ItemsPresenter.ItemsPanel>
             </ItemsPresenter>
@@ -98,7 +104,8 @@
   </Style-->
   <Style Selector="local|Ribbon[Orientation=Horizontal] local|RibbonGroupBox /template/ local|RibbonGroupWrapPanel#PART_ItemsPanel">
     <Setter Property="Orientation" Value="Vertical"/>
-    <Setter Property="Height" Value="72"/>
+    <Setter Property="MaxHeight" Value="110"/>
+	  <Setter Property="MinHeight" Value="65"/>
   </Style>
   <Style Selector="local|Ribbon[Orientation=Vertical] local|RibbonGroupBox /template/ local|RibbonGroupWrapPanel#PART_ItemsPanel">
     <Setter Property="Orientation" Value="Horizontal"/>

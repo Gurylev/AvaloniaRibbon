@@ -20,7 +20,7 @@ using System.Timers;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class RibbonWindow : Window, IStyleable
+    public class RibbonWindow : Window
     {
         public static readonly StyledProperty<IBrush> TitleBarBackgroundProperty = AvaloniaProperty.Register<RibbonWindow, IBrush>(nameof(TitleBarBackground));
         public IBrush TitleBarBackground
@@ -36,7 +36,7 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(TitleBarForegroundProperty, value);
         }
 
-        public static readonly StyledProperty<Orientation> OrientationProperty = StackLayout.OrientationProperty.AddOwner<RibbonWindow>();
+        public static readonly StyledProperty<Orientation> OrientationProperty = StackPanel.OrientationProperty.AddOwner<RibbonWindow>();
         public Orientation Orientation
         {
             get => GetValue(OrientationProperty);
@@ -134,9 +134,10 @@ namespace AvaloniaUI.Ribbon
         {
             var control = e.NameScope.Get<Control>(name);
             control.Cursor = new Cursor(cursor);
-            control.PointerPressed += (object sender, PointerPressedEventArgs ep) =>
+            control.PointerPressed += (_, ep) =>
             {
-                ((Window)this.GetVisualRoot()).PlatformImpl?.BeginResizeDrag(edge, ep);
+                if (this.GetVisualRoot() is Window window)
+                    window.BeginResizeDrag(edge, ep);
             };
         }
 
@@ -161,7 +162,7 @@ namespace AvaloniaUI.Ribbon
                     if (_titlebarSecondClick)
                         window.WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
                     else
-                        window.PlatformImpl?.BeginMoveDrag(ep);
+                        window.BeginMoveDrag(ep);
                     
 
                     if (!_titlebarSecondClick)
@@ -211,7 +212,7 @@ namespace AvaloniaUI.Ribbon
             catch (KeyNotFoundException) { }
         }
 
-        Type IStyleable.StyleKey => typeof(RibbonWindow);
+        protected override Type StyleKeyOverride => typeof(RibbonWindow);
     }
 
     public class WindowIconToImageConverter : IValueConverter

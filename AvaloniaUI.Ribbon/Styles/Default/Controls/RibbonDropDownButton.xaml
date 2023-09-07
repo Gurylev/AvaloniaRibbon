@@ -30,7 +30,7 @@
                 PlacementTarget="{Binding #QuickAccessToggle}"
                 PlacementMode="Bottom"
                 IsOpen="{Binding #QuickAccessToggle.IsChecked, Mode=TwoWay}"
-                StaysOpen="False">
+                >
                 <Border Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                   <ItemsPresenter
                       ItemTemplate="{Binding ItemTemplate}"
@@ -39,7 +39,7 @@
                 </Border>
               </Popup>
         </Panel-->
-        <local:RibbonDropDownButton Classes="quickAccessButton" ToolTip.Tip="{Binding ToolTip.Tip}" local:KeyTip.KeyTipKeys="{Binding KeyTip.Tip}" Height="30" Focusable="False" Icon="{Binding QuickAccessIcon}" Size="Small" MinSize="Small" MaxSize="Small" Items="{Binding Items}"/>
+        <local:RibbonDropDownButton Classes="quickAccessButton" ToolTip.Tip="{Binding ToolTip.Tip}" local:KeyTip.KeyTipKeys="{Binding KeyTip.Tip}" Height="30" Focusable="False" Icon="{Binding QuickAccessIcon}" Size="Small" MinSize="Small" MaxSize="Small" ItemsSource="{Binding Items}"/>
       </ControlTemplate>
     </Setter>
   </Style>
@@ -88,16 +88,13 @@
                 MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                 IsOpen="{TemplateBinding IsDropDownOpen,
                                                      Mode=TwoWay}"
-                ObeyScreenEdges="True"
                 PlacementTarget="{Binding #toggle}"
-                StaysOpen="False" HorizontalOffset="-1">
+                HorizontalOffset="-1">
                 <Border Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="1">
                   <VisualLayerManager>
                     <ScrollViewer>
                       <ItemsPresenter
                           Name="PART_ItemsPresenter"
-                          ItemTemplate="{TemplateBinding ItemTemplate}"
-                          Items="{TemplateBinding Items}"
                           ItemsPanel="{TemplateBinding ItemsPanel}"/>
                     </ScrollViewer>
                   </VisualLayerManager>
@@ -139,16 +136,13 @@
                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                   IsOpen="{TemplateBinding IsDropDownOpen,
                                                      Mode=TwoWay}"
-                  ObeyScreenEdges="True"
                   PlacementTarget="{TemplateBinding}"
-                  StaysOpen="False">
+                  >
                   <Border Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="1">
                     <VisualLayerManager>
                       <ScrollViewer>
                         <ItemsPresenter
                             Name="PART_ItemsPresenter"
-                            ItemTemplate="{TemplateBinding ItemTemplate}"
-                            Items="{TemplateBinding Items}"
                             ItemsPanel="{TemplateBinding ItemsPanel}"/>
                       </ScrollViewer>
                     </VisualLayerManager>
@@ -191,16 +185,13 @@
                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                   IsOpen="{TemplateBinding IsDropDownOpen,
                                                      Mode=TwoWay}"
-                  ObeyScreenEdges="True"
                   PlacementTarget="{TemplateBinding}"
-                  StaysOpen="False">
+                  >
                   <Border Background="{DynamicResource ThemeBackgroundBrush}" BorderBrush="{DynamicResource ThemeBorderMidBrush}" BorderThickness="1">
                     <VisualLayerManager>
                       <ScrollViewer>
                         <ItemsPresenter
                             Name="PART_ItemsPresenter"
-                            ItemTemplate="{TemplateBinding ItemTemplate}"
-                            Items="{TemplateBinding Items}"
                             ItemsPanel="{TemplateBinding ItemsPanel}"/>
                       </ScrollViewer>
                     </VisualLayerManager>

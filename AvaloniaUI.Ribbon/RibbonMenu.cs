@@ -13,7 +13,7 @@ using Avalonia.Controls.Templates;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class RibbonMenu : ItemsControl, IRibbonMenu, IStyleable
+    public class RibbonMenu : ItemsControl, IRibbonMenu
     {
         private IEnumerable _rightColumnItems = new AvaloniaList<object>();
         RibbonMenuItem _previousSelectedItem = null;
@@ -70,11 +70,11 @@ namespace AvaloniaUI.Ribbon
 
 
 
-        private static readonly FuncTemplate<IPanel> DefaultPanel = new FuncTemplate<IPanel>(() => new StackPanel());
+        private static readonly FuncTemplate<Panel> DefaultPanel = new FuncTemplate<Panel>(() => new StackPanel());
 
-        public static readonly StyledProperty<ITemplate<IPanel>> RightColumnItemsPanelProperty = AvaloniaProperty.Register<RibbonMenu, ITemplate<IPanel>>(nameof(RightColumnItemsPanel), DefaultPanel);
+        public static readonly StyledProperty<ITemplate<Panel>> RightColumnItemsPanelProperty = AvaloniaProperty.Register<RibbonMenu, ITemplate<Panel>>(nameof(RightColumnItemsPanel), DefaultPanel);
 
-        public ITemplate<IPanel> RightColumnItemsPanel
+        public ITemplate<Panel> RightColumnItemsPanel
         {
             get => GetValue(RightColumnItemsPanelProperty);
             set => SetValue(RightColumnItemsPanelProperty, value);
@@ -105,17 +105,28 @@ namespace AvaloniaUI.Ribbon
                         sender._previousSelectedItem.IsSelected = false;
                 }
             }));
+
+            ItemsSourceProperty.Changed.AddClassHandler<RibbonMenu>((x, e) => x.ItemsChanged(e));
         }
 
-        protected override void ItemsChanged(AvaloniaPropertyChangedEventArgs e)
+        public RibbonMenu()
         {
-            base.ItemsChanged(e);
+            Items.CollectionChanged += ItemsCollectionChanged;
+        }
+
+        protected void ItemsChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.OldValue is INotifyCollectionChanged oldSource)
+                oldSource.CollectionChanged -= ItemsCollectionChanged;
+            if (e.NewValue is INotifyCollectionChanged newSource)
+            {
+                newSource.CollectionChanged += ItemsCollectionChanged;
+            }
             ResetItemHoverEvents();
         }
 
-        protected override void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        protected void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            base.ItemsCollectionChanged(sender, e);
             ResetItemHoverEvents();
         }
 
@@ -123,8 +134,8 @@ namespace AvaloniaUI.Ribbon
         {
             foreach (RibbonMenuItem item in Items.OfType<RibbonMenuItem>())
             {
-                item.PointerEnter -= Item_PointerEnter;
-                item.PointerEnter += Item_PointerEnter;
+                item.PointerEntered -= Item_PointerEnter;
+                item.PointerEntered += Item_PointerEnter;
             }
         }
 

@@ -17,7 +17,7 @@ namespace AvaloniaUI.Ribbon
         Flyout*/
     }
 
-    public class RibbonGroupBox : HeaderedItemsControl, IStyleable
+    public class RibbonGroupBox : HeaderedItemsControl
     {
         public static readonly DirectProperty<RibbonGroupBox, ICommand> CommandProperty;
         public static readonly StyledProperty<object> CommandParameterProperty = AvaloniaProperty.Register<RibbonGroupBox, object>(nameof(CommandParameter));
@@ -40,7 +40,7 @@ namespace AvaloniaUI.Ribbon
             CommandProperty = AvaloniaProperty.RegisterDirect<RibbonGroupBox, ICommand>(nameof(Command), button => button.Command, (button, command) => button.Command = command, enableDataValidation: true);
         }
 
-        Type IStyleable.StyleKey => typeof(RibbonGroupBox);
+        protected override Type StyleKeyOverride => typeof(RibbonGroupBox);
 
         public object CommandParameter
         {

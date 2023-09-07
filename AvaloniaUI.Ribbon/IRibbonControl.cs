@@ -15,7 +15,7 @@ namespace AvaloniaUI.Ribbon
         Large
     }
 
-    public interface IRibbonControl : IAvaloniaObject
+    public interface IRibbonControl 
     {
         RibbonControlSize Size
         {
@@ -38,10 +38,10 @@ namespace AvaloniaUI.Ribbon
 
     public static class RibbonControlExtensions
     {
-        public static Ribbon GetParentRibbon(IControl control)
+        public static Ribbon GetParentRibbon(Control control)
         {
             return Avalonia.VisualTree.VisualExtensions.FindAncestorOfType<Ribbon>(control, true);
-            /*IControl parentRbn = control.Parent;
+            /*Control parentRbn = control.Parent;
             while ((!(parentRbn is Ribbon)) && (parentRbn != null))
             {
                 parentRbn = parentRbn.Parent;

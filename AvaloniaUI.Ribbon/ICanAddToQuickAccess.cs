@@ -9,7 +9,7 @@ using System.Text;
 
 namespace AvaloniaUI.Ribbon
 {
-    public interface ICanAddToQuickAccess : IAvaloniaObject
+    public interface ICanAddToQuickAccess
     {
         IControlTemplate QuickAccessTemplate
         {

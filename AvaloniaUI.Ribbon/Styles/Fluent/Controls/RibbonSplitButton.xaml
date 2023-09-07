@@ -8,7 +8,7 @@
     <Setter Property="Padding" Value="3"/>
     <Setter Property="QuickAccessTemplate">
       <ControlTemplate>
-        <local:RibbonSplitButton Classes="quickAccessButton" DataContext="{Binding}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}" ToolTip.Tip="{Binding ToolTip.Tip}" local:KeyTip.KeyTipKeys="{Binding KeyTip.Tip}" Height="34" Focusable="False" Icon="{Binding QuickAccessIcon}" Size="Small" MinSize="Small" MaxSize="Small" Items="{Binding Items}"/>
+        <local:RibbonSplitButton Classes="quickAccessButton" DataContext="{Binding}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}" ToolTip.Tip="{Binding ToolTip.Tip}" local:KeyTip.KeyTipKeys="{Binding KeyTip.Tip}" Height="34" Focusable="False" Icon="{Binding QuickAccessIcon}" Size="Small" MinSize="Small" MaxSize="Small" ItemsSource="{Binding Items}"/>
       </ControlTemplate>
     </Setter>
   </Style>
@@ -37,12 +37,13 @@
                 Name="toggle"
                 Grid.Row="1"
                 BorderThickness="0"
-                ClickMode="Press"
+                ClickMode="Release"
                 Focusable="False"
                 FontSize="12.5"
                 Padding="9,0,9,9"
                 IsChecked="{TemplateBinding IsDropDownOpen,
-                                                        Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                        Mode=TwoWay}"				
+				HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
               <DockPanel>
                 <ContentPresenter Content="{TemplateBinding Content}"/>
                 <Path
@@ -58,18 +59,17 @@
                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                   IsOpen="{TemplateBinding IsDropDownOpen,
                                                      Mode=TwoWay}"
-                  ObeyScreenEdges="True"
                   PlacementTarget="{TemplateBinding}"
-                  StaysOpen="False" VerticalOffset="-1">
+                   VerticalOffset="-1">					
                   <Border Background="{DynamicResource MenuFlyoutPresenterBackground}" BorderBrush="{DynamicResource MenuFlyoutPresenterBorderBrush}" BorderThickness="{DynamicResource MenuFlyoutPresenterBorderThemeThickness}" CornerRadius="{DynamicResource OverlayCornerRadius}" TextBlock.FontSize="{DynamicResource ContentControlFontSize}" Padding="{DynamicResource MenuFlyoutPresenterThemePadding}">
                     <VisualLayerManager>
                       <ScrollViewer Classes="menuscroller">
-                        <ItemsPresenter
-                            Name="PART_ItemsPresenter"
-                            ItemTemplate="{TemplateBinding ItemTemplate}"
-                            Items="{TemplateBinding Items}"
-                            ItemsPanel="{TemplateBinding ItemsPanel}"
-                            Margin="{DynamicResource MenuFlyoutScrollerMargin}"/>
+						  <ItemsPresenter
+							  Name="PART_ItemsPresenter"
+							  ItemsPanel="{TemplateBinding ItemsPanel}"
+							  Margin="{DynamicResource MenuFlyoutScrollerMargin}"
+							>							 
+						  </ItemsPresenter>
                       </ScrollViewer>
                     </VisualLayerManager>
                   </Border>
@@ -107,16 +107,13 @@
                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                   IsOpen="{TemplateBinding IsDropDownOpen,
                                                      Mode=TwoWay}"
-                  ObeyScreenEdges="True"
                   PlacementTarget="{TemplateBinding}"
-                  StaysOpen="False" VerticalOffset="-1">
+                   VerticalOffset="-1">
                   <Border Background="{DynamicResource MenuFlyoutPresenterBackground}" BorderBrush="{DynamicResource MenuFlyoutPresenterBorderBrush}" BorderThickness="{DynamicResource MenuFlyoutPresenterBorderThemeThickness}" CornerRadius="{DynamicResource OverlayCornerRadius}" TextBlock.FontSize="{DynamicResource ContentControlFontSize}" Padding="{DynamicResource MenuFlyoutPresenterThemePadding}">
                     <VisualLayerManager>
                       <ScrollViewer Classes="menuscroller">
                         <ItemsPresenter
                             Name="PART_ItemsPresenter"
-                            ItemTemplate="{TemplateBinding ItemTemplate}"
-                            Items="{TemplateBinding Items}"
                             ItemsPanel="{TemplateBinding ItemsPanel}"
                             Margin="{DynamicResource MenuFlyoutScrollerMargin}"/>
                       </ScrollViewer>
@@ -163,16 +160,13 @@
                   MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
                   IsOpen="{TemplateBinding IsDropDownOpen,
                                                      Mode=TwoWay}"
-                  ObeyScreenEdges="True"
                   PlacementTarget="{TemplateBinding}"
-                  StaysOpen="False" VerticalOffset="-1">
+                   VerticalOffset="-1">
                   <Border Background="{DynamicResource MenuFlyoutPresenterBackground}" BorderBrush="{DynamicResource MenuFlyoutPresenterBorderBrush}" BorderThickness="{DynamicResource MenuFlyoutPresenterBorderThemeThickness}" CornerRadius="{DynamicResource OverlayCornerRadius}" TextBlock.FontSize="{DynamicResource ContentControlFontSize}" Padding="{DynamicResource MenuFlyoutPresenterThemePadding}">
                     <VisualLayerManager>
                       <ScrollViewer Classes="menuscroller">
                         <ItemsPresenter
                             Name="PART_ItemsPresenter"
-                            ItemTemplate="{TemplateBinding ItemTemplate}"
-                            Items="{TemplateBinding Items}"
                             ItemsPanel="{TemplateBinding ItemsPanel}"
                             Margin="{DynamicResource MenuFlyoutScrollerMargin}"/>
                       </ScrollViewer>

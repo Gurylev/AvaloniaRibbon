@@ -6,27 +6,26 @@ using System;
 using System.Windows.Input;
 
 namespace AvaloniaUI.Ribbon
-{
-    public class RibbonSplitButton : RibbonDropDownButton, IStyleable
+{   
+    public class RibbonSplitButton : RibbonDropDownButton
     {
-        public static readonly DirectProperty<RibbonSplitButton, ICommand> CommandProperty;
+        public static readonly StyledProperty<ICommand> CommandProperty;
         public static readonly StyledProperty<object> CommandParameterProperty;
 
         static RibbonSplitButton()
         {
-            CommandProperty = Button.CommandProperty.AddOwner<RibbonSplitButton>(button => button.Command, (button, command) => button.Command = command);
+            CommandProperty = Button.CommandProperty.AddOwner<RibbonSplitButton>();
             CommandParameterProperty = Button.CommandParameterProperty.AddOwner<RibbonSplitButton>();
 
             Button.FocusableProperty.OverrideDefaultValue<RibbonSplitButton>(false);
         }
 
-        Type IStyleable.StyleKey => typeof(RibbonSplitButton);
+        protected override Type StyleKeyOverride => typeof(RibbonSplitButton);
 
-        private ICommand _command = null;
         public ICommand Command
         {
-            get => _command;
-            set => SetAndRaise(CommandProperty, ref _command, value);
+            get => GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
         public object CommandParameter
@@ -61,7 +60,7 @@ namespace AvaloniaUI.Ribbon
             Button.FocusableProperty.OverrideDefaultValue<RibbonSplitButton>(false);
         }
 
-        Type IStyleable.StyleKey => typeof(RibbonSplitButton);
+        protected override Type StyleKeyOverride => typeof(RibbonSplitButton);
 
         public object Content
         {

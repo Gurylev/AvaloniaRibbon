@@ -12,14 +12,15 @@ using System.Collections.ObjectModel;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class RibbonTab : TabItem, IStyleable, IKeyTipHandler
+    public class RibbonTab : TabItem, IKeyTipHandler
     {
-        Type IStyleable.StyleKey => typeof(RibbonTab);
+        protected override Type StyleKeyOverride => typeof(RibbonTab);
 
         public static readonly DirectProperty<RibbonTab, ObservableCollection<RibbonGroupBox>> GroupsProperty = AvaloniaProperty.RegisterDirect<RibbonTab, ObservableCollection<RibbonGroupBox>>(nameof(Groups), o => o.Groups, (o, v) => o.Groups = v);
 
         private ObservableCollection<RibbonGroupBox> _groups = new ObservableCollection<RibbonGroupBox>();
-        [Content]
+
+        
         public ObservableCollection<RibbonGroupBox> Groups
         {
             get { return _groups; }

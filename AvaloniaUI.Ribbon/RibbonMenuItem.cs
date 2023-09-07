@@ -12,10 +12,17 @@ using Avalonia.Interactivity;
 namespace AvaloniaUI.Ribbon
 {
 
-    public class RibbonMenuItem : HeaderedItemsControl, IStyleable
+    public class RibbonMenuItem : HeaderedItemsControl
     {
-        private ICommand _command;
+        static RibbonMenuItem()
+        {
+            ItemsSourceProperty.Changed.AddClassHandler<RibbonMenuItem>((x, e) => x.ItemsChanged(e));
+        }
 
+        public RibbonMenuItem()
+        {
+            Items.CollectionChanged += ItemsCollectionChanged;
+        }
 
         public static readonly StyledProperty<object> IconProperty = AvaloniaProperty.Register<RibbonMenuItem, object>(nameof(Icon));
 
@@ -49,25 +56,29 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(IsSelectedProperty, value);
         }
 
-        protected override void ItemsChanged(AvaloniaPropertyChangedEventArgs e)
+        protected void ItemsChanged(AvaloniaPropertyChangedEventArgs e)
         {
-            base.ItemsChanged(e);
-            HasItems = Items.OfType<object>().Count() > 0;
+            HasItems = Items.Any();
+            if (e.OldValue is INotifyCollectionChanged oldSource)
+                oldSource.CollectionChanged -= ItemsCollectionChanged;
+            if (e.NewValue is INotifyCollectionChanged newSource)
+            {
+                newSource.CollectionChanged += ItemsCollectionChanged;
+            }
         }
 
-        protected override void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        protected void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            base.ItemsCollectionChanged(sender, e);
-            HasItems = Items.OfType<object>().Count() > 0;
+            HasItems = Items.Any();
         }
 
-        public static readonly DirectProperty<RibbonMenuItem, ICommand> CommandProperty = Button.CommandProperty.AddOwner<RibbonMenuItem>(button => button.Command, (button, command) => button.Command = command);
+        public static readonly StyledProperty<ICommand> CommandProperty = Button.CommandProperty.AddOwner<RibbonMenuItem>();
 
 
         public ICommand Command
         {
-            get => _command;
-            set => SetAndRaise(CommandProperty, ref _command, value);
+            get => GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
 

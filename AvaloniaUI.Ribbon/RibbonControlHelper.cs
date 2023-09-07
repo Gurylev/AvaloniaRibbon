@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Layout;
 
 namespace AvaloniaUI.Ribbon
 {
-    public static class RibbonControlHelper<T> where T : AvaloniaObject, ILayoutable
+    public static class RibbonControlHelper<T> where T : Layoutable
     {
-        static readonly AvaloniaProperty<RibbonControlSize> SizeProperty = AvaloniaProperty.Register<IRibbonControl, RibbonControlSize>("Size", RibbonControlSize.Large, coerce: CoerceSize);
-        static readonly AvaloniaProperty<RibbonControlSize> MinSizeProperty = AvaloniaProperty.Register<IRibbonControl, RibbonControlSize>("MinSize", RibbonControlSize.Small);
-        static readonly AvaloniaProperty<RibbonControlSize> MaxSizeProperty = AvaloniaProperty.Register<IRibbonControl, RibbonControlSize>("MaxSize", RibbonControlSize.Large);
+        static readonly AvaloniaProperty<RibbonControlSize> SizeProperty = AvaloniaProperty.Register<Control, RibbonControlSize>("Size", RibbonControlSize.Large, coerce: CoerceSize);
+        static readonly AvaloniaProperty<RibbonControlSize> MinSizeProperty = AvaloniaProperty.Register<Control, RibbonControlSize>("MinSize", RibbonControlSize.Small);
+        static readonly AvaloniaProperty<RibbonControlSize> MaxSizeProperty = AvaloniaProperty.Register<Control, RibbonControlSize>("MaxSize", RibbonControlSize.Large);
 
-        private static RibbonControlSize CoerceSize(IAvaloniaObject obj, RibbonControlSize val)
+        private static RibbonControlSize CoerceSize(AvaloniaObject obj, RibbonControlSize val)
         {
             if (obj is IRibbonControl ctrl)
             {

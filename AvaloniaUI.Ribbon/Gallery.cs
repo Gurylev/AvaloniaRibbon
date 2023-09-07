@@ -10,7 +10,7 @@ using System.Text;
 
 namespace AvaloniaUI.Ribbon
 {
-    public class Gallery : ListBox, IStyleable, IRibbonControl
+    public class Gallery : ListBox, IRibbonControl
     {
         public static readonly AvaloniaProperty<RibbonControlSize> SizeProperty;
         public static readonly AvaloniaProperty<RibbonControlSize> MinSizeProperty;
@@ -24,26 +24,26 @@ namespace AvaloniaUI.Ribbon
             set => SetValue(ItemHeightProperty, value);
         }
 
-        public static readonly DirectProperty<Gallery, bool> IsDropDownOpenProperty;
+        public static readonly StyledProperty<bool> IsDropDownOpenProperty;
 
         static Gallery()
         {
-            IsDropDownOpenProperty = ComboBox.IsDropDownOpenProperty.AddOwner<Gallery>(element => element.IsDropDownOpen, (element, value) => element.IsDropDownOpen = value);
-            IsDropDownOpenProperty.Changed.AddClassHandler(new Action<Gallery, AvaloniaPropertyChangedEventArgs>((sneder, args) =>
+            IsDropDownOpenProperty = ComboBox.IsDropDownOpenProperty.AddOwner<Gallery>();
+            IsDropDownOpenProperty.Changed.AddClassHandler<Gallery, bool>(new Action<Gallery, AvaloniaPropertyChangedEventArgs>((sneder, args) =>
             {
-                sneder.UpdatePresenterLocation((bool)args.NewValue);
+                if (args.NewValue is bool value)
+                    sneder.UpdatePresenterLocation(value);
             }));
 
             RibbonControlHelper<Gallery>.SetProperties(out SizeProperty, out MinSizeProperty, out MaxSizeProperty);
         }
 
-        Type IStyleable.StyleKey => typeof(Gallery);
+        protected override Type StyleKeyOverride => typeof(Gallery);
 
-        private bool _isDropDownOpen;
         public bool IsDropDownOpen
         {
-            get => _isDropDownOpen;
-            set => SetAndRaise(IsDropDownOpenProperty, ref _isDropDownOpen, value);
+            get => GetValue(IsDropDownOpenProperty);
+            set => SetValue(IsDropDownOpenProperty, value);
         }
 
 
@@ -86,14 +86,14 @@ namespace AvaloniaUI.Ribbon
             {
                 a.Handled = true;
             };*/
-            e.NameScope.Find<Control>("PART_FlyoutRoot").PointerLeave += (sneder, a) => IsDropDownOpen = false;
+            e.NameScope.Find<Control>("PART_FlyoutRoot").PointerExited += (sneder, a) => IsDropDownOpen = false;
 
             UpdatePresenterLocation(IsDropDownOpen);
         }
 
         private void UpdatePresenterLocation(bool intoFlyout)
         {
-            if (_itemsPresenter.Parent is IContentPresenter presenter)
+            if (_itemsPresenter.Parent is ContentPresenter presenter)
                 presenter.Content = null;
             else if (_itemsPresenter.Parent is ContentControl control)
                 control.Content = null;

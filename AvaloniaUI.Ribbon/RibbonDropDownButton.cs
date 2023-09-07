@@ -2,17 +2,25 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Generators;
 using Avalonia.Controls.Presenters;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
+
+
+using ReactiveUI;
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AvaloniaUI.Ribbon
 {
     public class RibbonDropDownButton : ItemsControl, IRibbonControl, ICanAddToQuickAccess
     {
-        private bool _isDropDownOpen;
 
 
         public static readonly AvaloniaProperty<RibbonControlSize> SizeProperty;
@@ -59,7 +67,7 @@ namespace AvaloniaUI.Ribbon
 
 
         public static readonly StyledProperty<object> ContentProperty = ContentControl.ContentProperty.AddOwner<RibbonDropDownButton>();
-        public static readonly DirectProperty<RibbonDropDownButton, bool> IsDropDownOpenProperty = ComboBox.IsDropDownOpenProperty.AddOwner<RibbonDropDownButton>(o => o.IsDropDownOpen, (o, v) => o.IsDropDownOpen = v);
+        public static readonly StyledProperty<bool> IsDropDownOpenProperty = ComboBox.IsDropDownOpenProperty.AddOwner<RibbonDropDownButton>();
 
 
         public RibbonControlSize Size
@@ -88,29 +96,90 @@ namespace AvaloniaUI.Ribbon
 
         public bool IsDropDownOpen
         {
-            get => _isDropDownOpen;
-            set => SetAndRaise(IsDropDownOpenProperty, ref _isDropDownOpen, value);
+            get => GetValue(IsDropDownOpenProperty);
+            set => SetValue(IsDropDownOpenProperty, value);
         }
+
+
+        //protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        //{
+        //    base.OnAttachedToVisualTree(e);
+
+        //    try
+        //    {
+        //        var p = e.Parent.FindDescendantOfType<Popup>(true);
+        //        //var p = this.FindControl<Control>("PART_Popup"); //this.Get<Popup>("PART_Popup");//this.Find<Popup>("PART_Popup"); //this.FindControl<Popup>("local|RibbonSplitButton /template/ Popup#PART_Popup");
+        //        if (p != null)
+        //        {
+        //            p.KeyDown += P_KeyDown;
+        //            //this.AddDisposableHandler(Popup.KeyDownEvent, P_KeyDown);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //    }
+        //}
+
+        //private static T GetControl<T>(TemplateAppliedEventArgs e, string name) where T : class
+        //{
+        //    return e.NameScope.Get<T>(name);
+        //}
+        //protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+        //{
+        //    base.OnApplyTemplate(e);
+
+        //    var p = GetControl<Popup>(e, "PART_Popup");
+        //    if (p is null)
+        //        return;
+        //    p.PointerPressed += (sender, e) =>
+        //    {
+        //        Console.WriteLine($"===> Popup_PointerPressed event. IsPrimary: {e.Pointer.IsPrimary}");
+        //        if (!(sender is Popup popup))
+        //            return;
+        //        popup.IsOpen = false;
+        //    };
+        //}
 
         static RibbonDropDownButton()
         {
             RibbonControlHelper<RibbonDropDownButton>.SetProperties(out SizeProperty, out MinSizeProperty, out MaxSizeProperty);
+
+            //_ = RibbonDropDownItemPresenter.PointerPressedEvent
+            //                               .Raised
+            //                               .Subscribe(onNext: args =>
+            //                               {
+            //                                   if (!(args.Item1 is Popup item))
+            //                                       return;
+
+            //                                   RibbonDropDownButton? ribbonDropDownButton = null;
+
+            //                                   var parentButton = item.FindAncestorOfType<RibbonDropDownButton>()
+            //                                                                   ?? item.FindAncestorOfType<RibbonSplitButton>();
+            //                                   if (parentButton != null)
+            //                                       parentButton.IsDropDownOpen = false;
+
+            //                                   //item.IsOpen = false;
+            //                               });
         }
 
-        protected override IItemContainerGenerator CreateItemContainerGenerator()
-        {
-            return new ItemContainerGenerator<RibbonDropDownItemPresenter>(this, RibbonDropDownItemPresenter.ContentProperty, RibbonDropDownItemPresenter.ContentTemplateProperty);
-        }
+
+
+        //TODO
+        //protected override IItemContainerGenerator CreateItemContainerGenerator()
+        //{
+        //    return new ItemContainerGenerator<RibbonDropDownItemPresenter>(this, RibbonDropDownItemPresenter.ContentProperty, RibbonDropDownItemPresenter.ContentTemplateProperty);
+        //}
     }
 
     //public class RibbonDropDownItem : GalleryItem { }
-    public class RibbonDropDownButtonItemsPresenter : ItemsPresenter, IStyleable
+    public class RibbonDropDownButtonItemsPresenter : ItemsPresenter
     {
-        protected override IItemContainerGenerator CreateItemContainerGenerator()
-        {
-            return new ItemContainerGenerator<RibbonDropDownItemPresenter>(this, RibbonDropDownItemPresenter.ContentProperty, RibbonDropDownItemPresenter.ContentTemplateProperty);
-        }
+        //protected override IItemContainerGenerator CreateItemContainerGenerator()
+        //{
+        //    return new ItemContainerGenerator<RibbonDropDownItemPresenter>(this, RibbonDropDownItemPresenter.ContentProperty, RibbonDropDownItemPresenter.ContentTemplateProperty);
+        //}
 
-        Type IStyleable.StyleKey => typeof(ItemsPresenter);
+        protected override Type StyleKeyOverride => typeof(ItemsPresenter);
     }
 }
